@@ -1,171 +1,161 @@
-# English CBT — 초등 영어 단원평가 온라인 시스템
+# English CBT ??珥덈벑 ?곸뼱 ?⑥썝?됯? ?⑤씪???쒖뒪??
+珥덈벑?숆탳 ?곸뼱 ?⑥썝?됯?瑜?而댄벂?걔룻깭釉붾┸?쇰줈 ?ㅼ떆?섎뒗 CBT(Computer Based Test) ?뱀꽌鍮꾩뒪?낅땲??
+援먯궗??愿由ъ옄 ?붾㈃(臾몄젣??됀룹떆?샕룻븰?씲룹꽦??怨??숈깮???쒗뿕 ?붾㈃?쇰줈 ?섎돇硫? Cloudflare Workers + D1 + R2 ?꾩뿉???숈옉?⑸땲??
 
-초등학교 영어 단원평가를 컴퓨터·태블릿으로 실시하는 CBT(Computer Based Test) 웹서비스입니다.
-교사용 관리자 화면(문제은행·시험·학생·성적)과 학생용 시험 화면으로 나뉘며, Cloudflare Workers + D1 + R2 위에서 동작합니다.
+- 愿由ъ옄 ?ъ슜 ?ㅻ챸?? [docs/愿由ъ옄_?ъ슜?ㅻ챸??md](docs/愿由ъ옄_?ъ슜?ㅻ챸??md)
+- ?숈깮 ?묒떆 ?덈궡?? [docs/?숈깮_?묒떆?덈궡??md](docs/?숈깮_?묒떆?덈궡??md)
 
-- 관리자 사용 설명서: [docs/관리자_사용설명서.md](docs/관리자_사용설명서.md)
-- 학생 응시 안내서: [docs/학생_응시안내서.md](docs/학생_응시안내서.md)
+## 1. 援ъ꽦
 
-## 1. 구성
-
-| 경로 | 내용 |
+| 寃쎈줈 | ?댁슜 |
 | --- | --- |
-| `web/` | 프론트엔드 (React 19 + TypeScript + Vite + Tailwind CSS 4) |
-| `web/src/student/` | 학생 화면: 로그인, 시험 목록, 응시, 결과 |
-| `web/src/admin/` | 관리자 화면: 대시보드, 문제은행, 시험 관리, 학생 관리, 성적 관리, 설정 |
-| `web/src/lib/answerSync.ts` | 답안 자동 저장·오프라인 보관·재연결 동기화 |
-| `web/src/lib/exporters.ts` | CSV / Excel(.xlsx) 생성 (외부 라이브러리 없음) |
-| `worker/src/` | 백엔드 REST API (Cloudflare Workers, TypeScript) |
-| `shared/` | 프론트·백엔드 공통: 문제 유형, 공개 전 검사, 자동 채점 |
-| `migrations/` | D1 스키마 (`0001` 1차 구현, `0002` 전체 스키마 + 1차 데이터 이전) |
-| `tests/` | 자동화 테스트 (Vitest) |
-| `legacy/` | 1차 구현 원본 (`worker.js`, `index.html`) — 참고용, 배포에 포함되지 않음 |
-| `web/public/demo.html` | 1차 로컬 시연 프로토타입 (`/demo.html`, 실제 개인정보 입력 금지) |
+| `web/` | ?꾨줎?몄뿏??(React 19 + TypeScript + Vite + Tailwind CSS 4) |
+| `web/src/student/` | ?숈깮 ?붾㈃: 濡쒓렇?? ?쒗뿕 紐⑸줉, ?묒떆, 寃곌낵 |
+| `web/src/admin/` | 愿由ъ옄 ?붾㈃: ??쒕낫?? 臾몄젣??? ?쒗뿕 愿由? ?숈깮 愿由? ?깆쟻 愿由? ?ㅼ젙 |
+| `web/src/lib/answerSync.ts` | ?듭븞 ?먮룞 ??Β룹삤?꾨씪??蹂닿?쨌?ъ뿰寃??숆린??|
+| `web/src/lib/exporters.ts` | CSV / Excel(.xlsx) ?앹꽦 (?몃? ?쇱씠釉뚮윭由??놁쓬) |
+| `worker/src/` | 諛깆뿏??REST API (Cloudflare Workers, TypeScript) |
+| `shared/` | ?꾨줎?맞룸갚?붾뱶 怨듯넻: 臾몄젣 ?좏삎, 怨듦컻 ??寃?? ?먮룞 梨꾩젏 |
+| `migrations/` | D1 ?ㅽ궎留?(`0001` 1李?援ы쁽, `0002` ?꾩껜 ?ㅽ궎留?+ 1李??곗씠???댁쟾) |
+| `tests/` | ?먮룞???뚯뒪??(Vitest) |
+| `legacy/` | 1李?援ы쁽 ?먮낯 (`worker.js`, `index.html`) ??李멸퀬?? 諛고룷???ы븿?섏? ?딆쓬 |
+| `web/public/demo.html` | 1李?濡쒖뺄 ?쒖뿰 ?꾨줈?좏???(`/demo.html`, ?ㅼ젣 媛쒖씤?뺣낫 ?낅젰 湲덉?) |
 
-### 지원 문제 유형
-객관식(텍스트), 객관식(그림), O/X, 단답형, 문장 입력형, 듣기 객관식, 듣기 그림 선택, 철자(낱말) 배열
+### 吏??臾몄젣 ?좏삎
+媛앷????띿뒪??, 媛앷???洹몃┝), O/X, ?⑤떟?? 臾몄옣 ?낅젰?? ?ｊ린 媛앷??? ?ｊ린 洹몃┝ ?좏깮, 泥좎옄(?깅쭚) 諛곗뿴
 
-### 데이터베이스 (D1)
-`admins`(관리자) · `admin_sessions` · `classes`(학급) · `students`(학생) · `access_codes`(응시 코드, HMAC 해시만 저장) · `student_sessions` ·
-`questions`(문제은행) · `question_choices`(선택지) · `media`(미디어 파일, 본문은 R2) · `exams`(시험) · `exam_items`(편집 중 문항) ·
-`exam_versions` / `exam_version_items`(공개 시점의 문항·정답 스냅샷 = 시험별 문항 버전) · `exam_targets`(시험 대상 학생) ·
-`attempts`(응시 기록) · `answers`(학생 답안) · `audio_plays`(듣기 재생 횟수) · `grading_results`(채점 결과) · `audit_logs`(관리자 활동 기록) · `rate_limits`(요청 제한)
+### ?곗씠?곕쿋?댁뒪 (D1)
+`admins`(愿由ъ옄) 쨌 `admin_sessions` 쨌 `classes`(?숆툒) 쨌 `students`(?숈깮) 쨌 `access_codes`(?묒떆 肄붾뱶, HMAC ?댁떆留???? 쨌 `student_sessions` 쨌
+`questions`(臾몄젣??? 쨌 `question_choices`(?좏깮吏) 쨌 `media`(誘몃뵒???뚯씪, 蹂몃Ц? R2) 쨌 `exams`(?쒗뿕) 쨌 `exam_items`(?몄쭛 以?臾명빆) 쨌
+`exam_versions` / `exam_version_items`(怨듦컻 ?쒖젏??臾명빆쨌?뺣떟 ?ㅻ깄??= ?쒗뿕蹂?臾명빆 踰꾩쟾) 쨌 `exam_targets`(?쒗뿕 ????숈깮) 쨌
+`attempts`(?묒떆 湲곕줉) 쨌 `answers`(?숈깮 ?듭븞) 쨌 `audio_plays`(?ｊ린 ?ъ깮 ?잛닔) 쨌 `grading_results`(梨꾩젏 寃곌낵) 쨌 `audit_logs`(愿由ъ옄 ?쒕룞 湲곕줉) 쨌 `rate_limits`(?붿껌 ?쒗븳)
 
-관계: 학급 1—N 학생 1—N 응시 코드 / 문제 1—N 선택지 / 시험 1—N 버전 1—N 버전 문항 / 응시 → (시험, 버전, 학생) 1—N 답안·채점 결과.
-자세한 정의와 인덱스는 `migrations/0002_full_schema.sql` 참고.
+愿怨? ?숆툒 1?봏 ?숈깮 1?봏 ?묒떆 肄붾뱶 / 臾몄젣 1?봏 ?좏깮吏 / ?쒗뿕 1?봏 踰꾩쟾 1?봏 踰꾩쟾 臾명빆 / ?묒떆 ??(?쒗뿕, 踰꾩쟾, ?숈깮) 1?봏 ?듭븞쨌梨꾩젏 寃곌낵.
+?먯꽭???뺤쓽? ?몃뜳?ㅻ뒗 `migrations/0002_full_schema.sql` 李멸퀬.
 
-## 2. 개발 환경 (Windows)
+## 2. 媛쒕컻 ?섍꼍 (Windows)
 
-필요: **Node.js 20 이상** (22 LTS 권장), PowerShell 또는 명령 프롬프트.
+?꾩슂: **Node.js 20 ?댁긽** (22 LTS 沅뚯옣), PowerShell ?먮뒗 紐낅졊 ?꾨＼?꾪듃.
 
 ```powershell
 npm install
-# 설치 스크립트 승인 안내가 나오면 (npm 11 이상)
+# ?ㅼ튂 ?ㅽ겕由쏀듃 ?뱀씤 ?덈궡媛 ?섏삤硫?(npm 11 ?댁긽)
 npm install-scripts approve esbuild workerd
 npm rebuild esbuild workerd
 
-copy .dev.vars.example .dev.vars   # 값(APP_SECRET, SETUP_TOKEN)을 바꾸세요
-npm run db:local                   # 로컬 D1에 테이블 생성
-npm run dev                        # API(8787) + 화면(5173) 동시 실행
+copy .dev.vars.example .dev.vars   # 媛?APP_SECRET, SETUP_TOKEN)??諛붽씀?몄슂
+npm run db:local                   # 濡쒖뺄 D1???뚯씠釉??앹꽦
+npm run dev                        # API(8787) + ?붾㈃(5173) ?숈떆 ?ㅽ뻾
 ```
 
-- 학생 화면: http://localhost:5173/
-- 관리자 화면: http://localhost:5173/admin → 처음에는 「최초 관리자 설정」에서 `.dev.vars`의 `SETUP_TOKEN` 입력
-- 빌드된 결과로 Worker 하나만 실행하려면: `npm run build` 후 `npm run dev:api` → http://localhost:8787
+- ?숈깮 ?붾㈃: http://localhost:5173/
+- 愿由ъ옄 ?붾㈃: http://localhost:5173/admin ??泥섏쓬?먮뒗 ?뚯턀珥?愿由ъ옄 ?ㅼ젙?띿뿉??`.dev.vars`??`SETUP_TOKEN` ?낅젰
+- 鍮뚮뱶??寃곌낵濡?Worker ?섎굹留??ㅽ뻾?섎젮硫? `npm run build` ??`npm run dev:api` ??http://localhost:8787
 
-| 명령 | 설명 |
+| 紐낅졊 | ?ㅻ챸 |
 | --- | --- |
-| `npm run dev` | 개발 서버 (Vite + wrangler dev) |
-| `npm run build` | 프론트엔드 빌드 → `dist/` |
-| `npm run typecheck` | Worker·프론트 타입 검사 |
-| `npm test` | 자동화 테스트 |
-| `npm run check` | 타입 검사 + 테스트 + 빌드 |
-| `npm run db:local` / `db:remote` | D1 마이그레이션 (로컬 / 운영) |
-| `npm run deploy` | 빌드 후 Cloudflare 배포 |
+| `npm run dev` | 媛쒕컻 ?쒕쾭 (Vite + wrangler dev) |
+| `npm run build` | ?꾨줎?몄뿏??鍮뚮뱶 ??`dist/` |
+| `npm run typecheck` | Worker쨌?꾨줎?????寃??|
+| `npm test` | ?먮룞???뚯뒪??|
+| `npm run check` | ???寃??+ ?뚯뒪??+ 鍮뚮뱶 |
+| `npm run db:local` / `db:remote` | D1 留덉씠洹몃젅?댁뀡 (濡쒖뺄 / ?댁쁺) |
+| `npm run deploy` | 鍮뚮뱶 ??Cloudflare 諛고룷 |
 
-## 3. 환경 변수
-
-| 이름 | 종류 | 설명 |
+## 3. ?섍꼍 蹂??
+| ?대쫫 | 醫낅쪟 | ?ㅻ챸 |
 | --- | --- | --- |
-| `APP_SECRET` | 비밀(secret) | **필수.** 32자 이상 무작위 문자열. 응시 코드 해시(HMAC)와 미디어 서명 URL에 사용. 바꾸면 기존 응시 코드가 모두 무효가 됩니다. |
-| `SETUP_TOKEN` | 비밀(secret) | 최초 관리자 계정을 만들 때 한 번 입력. 관리자가 생긴 뒤에는 쓰이지 않음 |
-| `ACCESS_TEAM_DOMAIN` | 변수 | (선택) Cloudflare Access 팀 도메인. 예: `myschool.cloudflareaccess.com` |
-| `ACCESS_AUD` | 변수 | (선택) Access 애플리케이션의 AUD 태그 |
-| `ADMIN_EMAILS` | 변수 | (선택) Access로 들어온 이 이메일들은 관리자 계정을 자동 생성 (쉼표 구분) |
+| `APP_SECRET` | 鍮꾨?(secret) | **?꾩닔.** 32???댁긽 臾댁옉??臾몄옄?? ?묒떆 肄붾뱶 ?댁떆(HMAC)? 誘몃뵒???쒕챸 URL???ъ슜. 諛붽씀硫?湲곗〈 ?묒떆 肄붾뱶媛 紐⑤몢 臾댄슚媛 ?⑸땲?? |
+| `SETUP_TOKEN` | 鍮꾨?(secret) | 理쒖큹 愿由ъ옄 怨꾩젙??留뚮뱾 ????踰??낅젰. 愿由ъ옄媛 ?앷릿 ?ㅼ뿉???곗씠吏 ?딆쓬 |
+| `ACCESS_TEAM_DOMAIN` | 蹂??| (?좏깮) Cloudflare Access ? ?꾨찓?? ?? `myschool.cloudflareaccess.com` |
+| `ACCESS_AUD` | 蹂??| (?좏깮) Access ?좏뵆由ъ??댁뀡??AUD ?쒓렇 |
+| `ADMIN_EMAILS` | 蹂??| (?좏깮) Access濡??ㅼ뼱?????대찓?쇰뱾? 愿由ъ옄 怨꾩젙???먮룞 ?앹꽦 (?쇳몴 援щ텇) |
 
-로컬은 `.dev.vars`(예시: `.dev.vars.example`), 운영은 `wrangler secret put` / `wrangler.toml [vars]`로 설정합니다.
+濡쒖뺄? `.dev.vars`(?덉떆: `.dev.vars.example`), ?댁쁺? `wrangler secret put` / `wrangler.toml [vars]`濡??ㅼ젙?⑸땲??
 
-## 4. 배포 (Cloudflare)
+## 4. 諛고룷 (Cloudflare)
 
-> 아래 단계는 학교 Cloudflare 계정 권한이 필요합니다.
+> ?꾨옒 ?④퀎???숆탳 Cloudflare 怨꾩젙 沅뚰븳???꾩슂?⑸땲??
 
 ```powershell
 npx wrangler login
-npx wrangler d1 create english-cbt          # 출력된 database_id를 wrangler.toml에 입력
+npx wrangler d1 create english-cbt          # 異쒕젰??database_id瑜?wrangler.toml???낅젰
 npx wrangler r2 bucket create english-cbt-media
-npx wrangler secret put APP_SECRET          # 32자 이상 무작위 값
-npx wrangler secret put SETUP_TOKEN
-npm run db:remote                           # 운영 D1에 테이블 생성
-npm run deploy                              # 빌드 + Workers(Static Assets 포함) 배포
+npx wrangler secret put APP_SECRET          # 32???댁긽 臾댁옉??媛?npx wrangler secret put SETUP_TOKEN
+npm run db:remote                           # ?댁쁺 D1???뚯씠釉??앹꽦
+npm run deploy                              # 鍮뚮뱶 + Workers(Static Assets ?ы븿) 諛고룷
 ```
 
-### 현재 배포
-- 서비스: https://english-cbt.invinciblebearme.workers.dev (관리자: `/admin`)
-- 저장소: https://github.com/invinciblebearme-ctrl/english-cbt
-- 자동 배포(Workers Builds): Cloudflare 대시보드 → Workers → `english-cbt` → Settings → Builds에서 이 저장소를 연결.
-  배포 명령 `npx wrangler deploy`, 루트 디렉터리 `/`, 브랜치 `main`. 빌드 명령은 비워 둬도 됩니다
-  (`wrangler.toml`의 `[build]`가 배포 전에 `npm run build`를 자동 실행).
-  D1 스키마 변경(새 마이그레이션)이 있을 때는 배포 전에 `npm run db:remote`를 실행하세요.
+### ?꾩옱 諛고룷
+- ?쒕퉬?? https://english-cbt.invinciblebearme.workers.dev (愿由ъ옄: `/admin`)
+- ??μ냼: https://github.com/invinciblebearme-ctrl/english-cbt
+- ?먮룞 諛고룷(Workers Builds): Cloudflare ??쒕낫????Workers ??`english-cbt` ??Settings ??Builds?먯꽌 ????μ냼瑜??곌껐.
+  諛고룷 紐낅졊 `npx wrangler deploy`, 猷⑦듃 ?붾젆?곕━ `/`, 釉뚮옖移?`main`. 鍮뚮뱶 紐낅졊? 鍮꾩썙 ?щ룄 ?⑸땲??  (`wrangler.toml`??`[build]`媛 諛고룷 ?꾩뿉 `npm run build`瑜??먮룞 ?ㅽ뻾).
+  D1 ?ㅽ궎留?蹂寃???留덉씠洹몃젅?댁뀡)???덉쓣 ?뚮뒗 諛고룷 ?꾩뿉 `npm run db:remote`瑜??ㅽ뻾?섏꽭??
 
-배포 후 `https://<주소>/api/health`에서 `{"ok":true,"db":true,"media":true,"secret":true}`를 확인하고, `/admin`에서 최초 관리자를 만듭니다.
+諛고룷 ??`https://<二쇱냼>/api/health`?먯꽌 `{"ok":true,"db":true,"media":true,"secret":true}`瑜??뺤씤?섍퀬, `/admin`?먯꽌 理쒖큹 愿由ъ옄瑜?留뚮벊?덈떎.
 
-- **Workers Static Assets**로 화면과 API를 한 Worker에서 제공합니다(`wrangler.toml [assets]`). 별도의 Cloudflare Pages 프로젝트는 필요하지 않습니다. Pages를 꼭 써야 한다면 `dist/`를 Pages에 올리고 `/api/*`를 이 Worker로 라우팅하면 됩니다.
-- **Cron**(`*/5 * * * *`)이 시간이 지난 응시를 서버 기준으로 마감·채점하고 만료 세션을 정리합니다.
+- **Workers Static Assets**濡??붾㈃怨?API瑜???Worker?먯꽌 ?쒓났?⑸땲??`wrangler.toml [assets]`). 蹂꾨룄??Cloudflare Pages ?꾨줈?앺듃???꾩슂?섏? ?딆뒿?덈떎. Pages瑜?瑗??⑥빞 ?쒕떎硫?`dist/`瑜?Pages???щ━怨?`/api/*`瑜???Worker濡??쇱슦?낇븯硫??⑸땲??
+- **Cron**(`*/5 * * * *`)???쒓컙??吏???묒떆瑜??쒕쾭 湲곗??쇰줈 留덇컧쨌梨꾩젏?섍퀬 留뚮즺 ?몄뀡???뺣━?⑸땲??
 
-### Cloudflare Access (권장)
-1. Zero Trust → Access → Applications에서 Self-hosted 앱을 만들고 경로를 `<주소>/admin*`, `<주소>/api/admin/*`로 지정, 교사 이메일만 허용합니다.
-2. 앱의 AUD 태그와 팀 도메인을 `wrangler.toml [vars]`의 `ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`에 넣고 다시 배포합니다.
-3. Worker가 `Cf-Access-Jwt-Assertion` JWT의 서명(RS256)·만료·AUD·발급자를 검증합니다. 이메일이 `admins.email` 또는 `ADMIN_EMAILS`에 있어야 관리자로 인정됩니다.
-4. Access를 쓰지 않아도 아이디·비밀번호 로그인(PBKDF2 해시, 세션 쿠키)으로 운영할 수 있습니다.
+### Cloudflare Access (沅뚯옣)
+1. Zero Trust ??Access ??Applications?먯꽌 Self-hosted ?깆쓣 留뚮뱾怨?寃쎈줈瑜?`<二쇱냼>/admin*`, `<二쇱냼>/api/admin/*`濡?吏?? 援먯궗 ?대찓?쇰쭔 ?덉슜?⑸땲??
+2. ?깆쓽 AUD ?쒓렇? ? ?꾨찓?몄쓣 `wrangler.toml [vars]`??`ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`???ｊ퀬 ?ㅼ떆 諛고룷?⑸땲??
+3. Worker媛 `Cf-Access-Jwt-Assertion` JWT???쒕챸(RS256)쨌留뚮즺쨌AUD쨌諛쒓툒?먮? 寃利앺빀?덈떎. ?대찓?쇱씠 `admins.email` ?먮뒗 `ADMIN_EMAILS`???덉뼱??愿由ъ옄濡??몄젙?⑸땲??
+4. Access瑜??곗? ?딆븘???꾩씠?붋룸퉬諛踰덊샇 濡쒓렇??PBKDF2 ?댁떆, ?몄뀡 荑좏궎)?쇰줈 ?댁쁺?????덉뒿?덈떎.
 
-## 5. 보안 구현 요약
+## 5. 蹂댁븞 援ы쁽 ?붿빟
 
-| 항목 | 구현 |
+| ??ぉ | 援ы쁽 |
 | --- | --- |
-| 관리자 인증 | 비밀번호(PBKDF2-SHA256 10만 회) + HttpOnly·Secure·SameSite=Strict 세션 쿠키(8시간, 2시간 미사용 만료) / Cloudflare Access JWT 검증 |
-| 서버 측 권한 검사 | 모든 `/api/admin/*`에서 세션 확인, 교사 계정·활동 기록은 최고 관리자 전용 |
-| 요청 위조(CSRF) | 변경 요청에 `X-CBT-Admin` 헤더 필수 + Origin 검사 + SameSite=Strict |
-| 학생 응시 권한 | 학생 세션(Bearer 토큰, 4시간) → 시험 대상 여부·공개 상태·응시 기간·본인 응시 여부를 서버에서 확인 |
-| 정답 차단 | 학생 API는 정답·해설을 보내지 않음. 철자 배열 카드는 학생마다 서버에서 섞고 매핑은 서버에만 보관 |
-| 채점 | 서버의 버전 스냅샷 기준으로만 채점(클라이언트 점수 무시), 중복 제출 시 재채점 안 함 |
-| 응시 코드 | 32자 알파벳 8자리(약 1조 가지) `crypto.getRandomValues`, DB에는 HMAC-SHA256(학생ID+코드)만 저장, 재발급 시 이전 코드·세션 즉시 무효 |
-| 무차별 대입 방지 | 학생별 로그인 실패 5회/15분 잠금, IP별 60회/15분, 관리자 아이디별 8회·IP별 30회/15분 |
-| API 요청 제한 | 응시별 답안 저장 300회/분 (학교는 IP를 공유하므로 IP 단위 제한은 로그인에만 적용) |
-| SQL 인젝션 | 모든 쿼리는 바인딩 파라미터 사용, 검색어 LIKE 특수문자 이스케이프 |
-| XSS | React 자동 이스케이프(`dangerouslySetInnerHTML` 미사용) + CSP(`script-src 'self'`) + `X-Frame-Options: DENY` |
-| 파일 업로드 | 실제 파일 시그니처(PNG/JPG/GIF/WEBP/MP3/WAV) 검사, 그림 5MB·음성 15MB 제한, 파일명 정리, 미디어 응답에 `sandbox` CSP |
-| 미디어 접근 | 교사는 세션 쿠키, 학생은 해당 응시에 묶인 HMAC 서명 URL(만료 포함)로만 접근. 음성은 재생 요청 때만 20분짜리 URL 발급 |
-| 개인정보 | 학년·반·번호·이름만 수집, 관리자만 열람, 활동 기록에 코드·비밀번호 미기록 |
+| 愿由ъ옄 ?몄쬆 | 鍮꾨?踰덊샇(PBKDF2-SHA256 10留??? + HttpOnly쨌Secure쨌SameSite=Strict ?몄뀡 荑좏궎(8?쒓컙, 2?쒓컙 誘몄궗??留뚮즺) / Cloudflare Access JWT 寃利?|
+| ?쒕쾭 痢?沅뚰븳 寃??| 紐⑤뱺 `/api/admin/*`?먯꽌 ?몄뀡 ?뺤씤, 援먯궗 怨꾩젙쨌?쒕룞 湲곕줉? 理쒓퀬 愿由ъ옄 ?꾩슜 |
+| ?붿껌 ?꾩“(CSRF) | 蹂寃??붿껌??`X-CBT-Admin` ?ㅻ뜑 ?꾩닔 + Origin 寃??+ SameSite=Strict |
+| ?숈깮 ?묒떆 沅뚰븳 | ?숈깮 ?몄뀡(Bearer ?좏겙, 4?쒓컙) ???쒗뿕 ????щ?쨌怨듦컻 ?곹깭쨌?묒떆 湲곌컙쨌蹂몄씤 ?묒떆 ?щ?瑜??쒕쾭?먯꽌 ?뺤씤 |
+| ?뺣떟 李⑤떒 | ?숈깮 API???뺣떟쨌?댁꽕??蹂대궡吏 ?딆쓬. 泥좎옄 諛곗뿴 移대뱶???숈깮留덈떎 ?쒕쾭?먯꽌 ?욊퀬 留ㅽ븨? ?쒕쾭?먮쭔 蹂닿? |
+| 梨꾩젏 | ?쒕쾭??踰꾩쟾 ?ㅻ깄??湲곗??쇰줈留?梨꾩젏(?대씪?댁뼵???먯닔 臾댁떆), 以묐났 ?쒖텧 ???ъ콈??????|
+| ?묒떆 肄붾뱶 | 32???뚰뙆踰?8?먮━(??1議?媛吏) `crypto.getRandomValues`, DB?먮뒗 HMAC-SHA256(?숈깮ID+肄붾뱶)留???? ?щ컻湲????댁쟾 肄붾뱶쨌?몄뀡 利됱떆 臾댄슚 |
+| 臾댁감蹂????諛⑹? | ?숈깮蹂?濡쒓렇???ㅽ뙣 5??15遺??좉툑, IP蹂?60??15遺? 愿由ъ옄 ?꾩씠?붾퀎 8?뙿텶P蹂?30??15遺?|
+| API ?붿껌 ?쒗븳 | ?묒떆蹂??듭븞 ???300??遺?(?숆탳??IP瑜?怨듭쑀?섎?濡?IP ?⑥쐞 ?쒗븳? 濡쒓렇?몄뿉留??곸슜) |
+| SQL ?몄젥??| 紐⑤뱺 荑쇰━??諛붿씤???뚮씪誘명꽣 ?ъ슜, 寃?됱뼱 LIKE ?뱀닔臾몄옄 ?댁뒪耳?댄봽 |
+| XSS | React ?먮룞 ?댁뒪耳?댄봽(`dangerouslySetInnerHTML` 誘몄궗?? + CSP(`script-src 'self'`) + `X-Frame-Options: DENY` |
+| ?뚯씪 ?낅줈??| ?ㅼ젣 ?뚯씪 ?쒓렇?덉쿂(PNG/JPG/GIF/WEBP/MP3/WAV) 寃?? 洹몃┝ 5MB쨌?뚯꽦 15MB ?쒗븳, ?뚯씪紐??뺣━, 誘몃뵒???묐떟??`sandbox` CSP |
+| 誘몃뵒???묎렐 | 援먯궗???몄뀡 荑좏궎, ?숈깮? ?대떦 ?묒떆??臾띠씤 HMAC ?쒕챸 URL(留뚮즺 ?ы븿)濡쒕쭔 ?묎렐. ?뚯꽦? ?ъ깮 ?붿껌 ?뚮쭔 20遺꾩쭨由?URL 諛쒓툒 |
+| 媛쒖씤?뺣낫 | ?숇뀈쨌諛샕룸쾲?맞룹씠由꾨쭔 ?섏쭛, 愿由ъ옄留??대엺, ?쒕룞 湲곕줉??肄붾뱶쨌鍮꾨?踰덊샇 誘멸린濡?|
 
-## 6. 테스트
-
+## 6. ?뚯뒪??
 ```powershell
 npm test
 ```
 
-| 파일 | 내용 |
+| ?뚯씪 | ?댁슜 |
 | --- | --- |
-| `tests/grading.test.ts` | 공개 전 누락 검사, 8개 유형 자동 채점(대소문자·공백·복수 정답·허용 답안·필수 낱말·부분 점수·수동 채점·철자 배열) |
-| `tests/security-utils.test.ts` | 응시 코드 형식·충돌, 비밀번호 해시, 파일 시그니처 판별 |
-| `tests/api.test.ts` | 로컬 D1·R2(Miniflare)로 전체 흐름: 관리자 인증·CSRF·로그인 제한 → 업로드 → 문제은행 → 학생·코드 → 시험 공개 검사 → 응시·자동 저장·재생 횟수 → 제출·채점 → 버전 보존 → 시간 종료 → 성적·수동 채점·재응시·코드 재발급·활동 기록 |
-| `tests/migration.test.ts` | 1차 스키마 데이터가 2차 스키마로 옮겨지는지 |
-| `tests/frontend-lib.test.ts` | 오프라인 답안 보관·재연결 동기화·순서 역전 방지, CSV, XLSX 구조 |
+| `tests/grading.test.ts` | 怨듦컻 ???꾨씫 寃?? 8媛??좏삎 ?먮룞 梨꾩젏(??뚮Ц?먃룰났諛굿룸났???뺣떟쨌?덉슜 ?듭븞쨌?꾩닔 ?깅쭚쨌遺遺??먯닔쨌?섎룞 梨꾩젏쨌泥좎옄 諛곗뿴) |
+| `tests/security-utils.test.ts` | ?묒떆 肄붾뱶 ?뺤떇쨌異⑸룎, 鍮꾨?踰덊샇 ?댁떆, ?뚯씪 ?쒓렇?덉쿂 ?먮퀎 |
+| `tests/api.test.ts` | 濡쒖뺄 D1쨌R2(Miniflare)濡??꾩껜 ?먮쫫: 愿由ъ옄 ?몄쬆쨌CSRF쨌濡쒓렇???쒗븳 ???낅줈????臾몄젣??????숈깮쨌肄붾뱶 ???쒗뿕 怨듦컻 寃?????묒떆쨌?먮룞 ??Β룹옱???잛닔 ???쒖텧쨌梨꾩젏 ??踰꾩쟾 蹂댁〈 ???쒓컙 醫낅즺 ???깆쟻쨌?섎룞 梨꾩젏쨌?ъ쓳?쑣룹퐫???щ컻湲됀룻솢??湲곕줉 |
+| `tests/migration.test.ts` | 1李??ㅽ궎留??곗씠?곌? 2李??ㅽ궎留덈줈 ??꺼吏?붿? |
+| `tests/frontend-lib.test.ts` | ?ㅽ봽?쇱씤 ?듭븞 蹂닿?쨌?ъ뿰寃??숆린?붋룹닚????쟾 諛⑹?, CSV, XLSX 援ъ“ |
 
-### 브라우저 화면 테스트 (E2E)
-PC에 설치된 Edge(없으면 Chrome)를 Playwright로 직접 조작합니다. **빈 로컬 DB**에서 실행하세요.
+### 釉뚮씪?곗? ?붾㈃ ?뚯뒪??(E2E)
+PC???ㅼ튂??Edge(?놁쑝硫?Chrome)瑜?Playwright濡?吏곸젒 議곗옉?⑸땲?? **鍮?濡쒖뺄 DB**?먯꽌 ?ㅽ뻾?섏꽭??
 
 ```powershell
 npm run build
-npx wrangler dev --port 8787        # 다른 창에서 실행
-npm run test:e2e                    # 스크린샷은 %TEMP%\cbt-e2e 에 저장
-```
+npx wrangler dev --port 8787        # ?ㅻⅨ 李쎌뿉???ㅽ뻾
+npm run test:e2e                    # ?ㅽ겕由곗꺑? %TEMP%\cbt-e2e ?????```
 
-관리자 최초 설정 → 문제 등록(객관식·듣기·O/X·철자 배열, 임시 저장·누락 표시·음성 업로드·미리보기·필터) → 학생 일괄 등록·코드 쪽지 → 시험 구성·공개 → 학생 로그인(틀린 코드 포함)·응시·듣기 재생 횟수·**인터넷 끊김 후 자동 동기화**·새로고침 유지·철자 배열·미응답 경고·제출 → 휴대폰 화면(가로 스크롤 없음) → 성적 통계·정오표·응시 현황·Excel/CSV 다운로드 → 대시보드 → 활동 기록·로그아웃, 총 19개 시나리오.
+愿由ъ옄 理쒖큹 ?ㅼ젙 ??臾몄젣 ?깅줉(媛앷??씲룸뱽湲걔텽/X쨌泥좎옄 諛곗뿴, ?꾩떆 ??Β룸늻???쒖떆쨌?뚯꽦 ?낅줈?쑣룸?由щ낫湲걔룻븘?? ???숈깮 ?쇨큵 ?깅줉쨌肄붾뱶 履쎌? ???쒗뿕 援ъ꽦쨌怨듦컻 ???숈깮 濡쒓렇???由?肄붾뱶 ?ы븿)쨌?묒떆쨌?ｊ린 ?ъ깮 ?잛닔쨌**?명꽣???딄? ???먮룞 ?숆린??*쨌?덈줈怨좎묠 ?좎?쨌泥좎옄 諛곗뿴쨌誘몄쓳??寃쎄퀬쨌?쒖텧 ???대????붾㈃(媛濡??ㅽ겕濡??놁쓬) ???깆쟻 ?듦퀎쨌?뺤삤?쑣룹쓳???꾪솴쨌Excel/CSV ?ㅼ슫濡쒕뱶 ????쒕낫?????쒕룞 湲곕줉쨌濡쒓렇?꾩썐, 珥?19媛??쒕굹由ъ삤.
 
-최근 실행 결과: 단위·통합 **5개 파일, 83개 테스트 모두 통과**, 브라우저 E2E **19개 시나리오 모두 통과(콘솔 오류 없음)**. 별도로 `wrangler dev` 실제 서버에 대한 HTTP 점검(SPA 라우팅, 보안 헤더, R2 업로드, 서명 URL, 음성 Range 요청, 재생 횟수 제한, 제출·채점, cron 핸들러) 23개 항목도 모두 통과했습니다.
+理쒓렐 ?ㅽ뻾 寃곌낵: ?⑥쐞쨌?듯빀 **5媛??뚯씪, 83媛??뚯뒪??紐⑤몢 ?듦낵**, 釉뚮씪?곗? E2E **19媛??쒕굹由ъ삤 紐⑤몢 ?듦낵(肄섏넄 ?ㅻ쪟 ?놁쓬)**. 蹂꾨룄濡?`wrangler dev` ?ㅼ젣 ?쒕쾭?????HTTP ?먭?(SPA ?쇱슦?? 蹂댁븞 ?ㅻ뜑, R2 ?낅줈?? ?쒕챸 URL, ?뚯꽦 Range ?붿껌, ?ъ깮 ?잛닔 ?쒗븳, ?쒖텧쨌梨꾩젏, cron ?몃뱾?? 23媛???ぉ??紐⑤몢 ?듦낵?덉뒿?덈떎.
 
-## 7. 1차 구현에서 바뀐 점
-- `worker.js`(단일 파일) → `worker/src/` TypeScript 모듈, `public/index.html`(바닐라 JS) → React 앱. 원본은 `legacy/`에 보존.
-- `0002` 마이그레이션이 1차 테이블을 `legacy_*`로 이름만 바꿔 보존하고, 문제·선택지·미디어·학생을 새 구조로 옮깁니다. 옮긴 문제는 모두 「임시 저장」 상태이므로 교사가 확인 후 「완성」으로 저장해야 합니다. 1차 시험·응시 기록은 구조가 달라 옮기지 않습니다.
-- 1차 README의 후속 과제(Access JWT 검증, 로그인 제한, 코드 재발급, 파일 시그니처 검사, 학생 미디어 인증 URL, 재생 횟수 제한, 문항 섞기, 시간 종료 자동 제출, 문장형 기준·수동 채점, 명단 일괄 등록)를 모두 구현했습니다.
+## 7. 1李?援ы쁽?먯꽌 諛붾???- `worker.js`(?⑥씪 ?뚯씪) ??`worker/src/` TypeScript 紐⑤뱢, `public/index.html`(諛붾땺??JS) ??React ?? ?먮낯? `legacy/`??蹂댁〈.
+- `0002` 留덉씠洹몃젅?댁뀡??1李??뚯씠釉붿쓣 `legacy_*`濡??대쫫留?諛붽퓭 蹂댁〈?섍퀬, 臾몄젣쨌?좏깮吏쨌誘몃뵒?는룻븰?앹쓣 ??援ъ“濡???퉩?덈떎. ??릿 臾몄젣??紐⑤몢 ?뚯엫????γ??곹깭?대?濡?援먯궗媛 ?뺤씤 ???뚯셿?긱띿쑝濡???ν빐???⑸땲?? 1李??쒗뿕쨌?묒떆 湲곕줉? 援ъ“媛 ?щ씪 ??린吏 ?딆뒿?덈떎.
+- 1李?README???꾩냽 怨쇱젣(Access JWT 寃利? 濡쒓렇???쒗븳, 肄붾뱶 ?щ컻湲? ?뚯씪 ?쒓렇?덉쿂 寃?? ?숈깮 誘몃뵒???몄쬆 URL, ?ъ깮 ?잛닔 ?쒗븳, 臾명빆 ?욊린, ?쒓컙 醫낅즺 ?먮룞 ?쒖텧, 臾몄옣??湲곗?쨌?섎룞 梨꾩젏, 紐낅떒 ?쇨큵 ?깅줉)瑜?紐⑤몢 援ы쁽?덉뒿?덈떎.
 
-## 8. 실제 학교 운영 전 확인 사항
-1. `APP_SECRET`을 충분히 긴 무작위 값으로 설정했는지, `.dev.vars`가 외부에 공유되지 않았는지
-2. 관리자 화면에 Cloudflare Access를 적용했거나, 강한 비밀번호와 교사별 개별 계정을 쓰는지
-3. 실제 학생 수만큼 동시 접속하는 **사전 점검(리허설)**: 학교 Wi-Fi, 태블릿 브라우저(Chrome/Safari/Whale), 이어폰 음량
-4. 듣기 음성은 MP3(128kbps 내외) 권장. 학교망에서 첫 재생 지연이 없는지 확인
-5. 학교 공용 IP 한 개로 많은 학생이 접속하므로, Cloudflare WAF 속도 제한 규칙을 추가할 경우 기준을 넉넉히(예: IP당 분당 수천 건) 잡을 것
-6. 개인정보 처리 방침(보관 기간, 학년도 종료 후 학생·응시 기록 삭제 절차) 마련. 학급 삭제 시 소속 학생이 함께 삭제됨
-7. D1 백업: Cloudflare D1 Time Travel(기본 30일) 확인, 학기말 성적은 Excel로 따로 보관
-8. 1차 데이터를 쓰던 경우 이전된 문제를 검수하고 「완성」으로 저장
-9. 결과 공개 방식(교사만 / 점수 / 점수+정오) 시험마다 확인
+## 8. ?ㅼ젣 ?숆탳 ?댁쁺 ???뺤씤 ?ы빆
+1. `APP_SECRET`??異⑸텇??湲?臾댁옉??媛믪쑝濡??ㅼ젙?덈뒗吏, `.dev.vars`媛 ?몃???怨듭쑀?섏? ?딆븯?붿?
+2. 愿由ъ옄 ?붾㈃??Cloudflare Access瑜??곸슜?덇굅?? 媛뺥븳 鍮꾨?踰덊샇? 援먯궗蹂?媛쒕퀎 怨꾩젙???곕뒗吏
+3. ?ㅼ젣 ?숈깮 ?섎쭔???숈떆 ?묒냽?섎뒗 **?ъ쟾 ?먭?(由ы뿀??**: ?숆탳 Wi-Fi, ?쒕툝由?釉뚮씪?곗?(Chrome/Safari/Whale), ?댁뼱???뚮웾
+4. ?ｊ린 ?뚯꽦? MP3(128kbps ?댁쇅) 沅뚯옣. ?숆탳留앹뿉??泥??ъ깮 吏?곗씠 ?녿뒗吏 ?뺤씤
+5. ?숆탳 怨듭슜 IP ??媛쒕줈 留롮? ?숈깮???묒냽?섎?濡? Cloudflare WAF ?띾룄 ?쒗븳 洹쒖튃??異붽???寃쎌슦 湲곗????됰꼮???? IP??遺꾨떦 ?섏쿇 嫄? ?≪쓣 寃?6. 媛쒖씤?뺣낫 泥섎━ 諛⑹묠(蹂닿? 湲곌컙, ?숇뀈??醫낅즺 ???숈깮쨌?묒떆 湲곕줉 ??젣 ?덉감) 留덈젴. ?숆툒 ??젣 ???뚯냽 ?숈깮???④퍡 ??젣??7. D1 諛깆뾽: Cloudflare D1 Time Travel(湲곕낯 30?? ?뺤씤, ?숆린留??깆쟻? Excel濡??곕줈 蹂닿?
+8. 1李??곗씠?곕? ?곕뜕 寃쎌슦 ?댁쟾??臾몄젣瑜?寃?섑븯怨??뚯셿?긱띿쑝濡????9. 寃곌낵 怨듦컻 諛⑹떇(援먯궗留?/ ?먯닔 / ?먯닔+?뺤삤) ?쒗뿕留덈떎 ?뺤씤
