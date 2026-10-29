@@ -2,6 +2,12 @@ name = "english-cbt"
 main = "worker/src/index.ts"
 compatibility_date = "2026-10-01"
 
+# wrangler deploy / wrangler dev 실행 전에 프론트엔드를 먼저 빌드합니다.
+# (Cloudflare Workers Builds에서 빌드 명령을 비워 두어도 dist/가 만들어짐)
+[build]
+command = "npm run build"
+watch_dir = ["web/src", "shared"]
+
 # 프론트엔드(Vite 빌드 결과)를 Workers Static Assets로 제공합니다.
 # /api/* 는 항상 Worker가 먼저 처리하고, 그 외 경로는 SPA(index.html)로 연결됩니다.
 [assets]
