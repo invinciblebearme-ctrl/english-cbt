@@ -2,21 +2,21 @@ name = "english-cbt"
 main = "worker/src/index.ts"
 compatibility_date = "2026-10-01"
 
-# ?ъ슜??吏???꾨찓??(DNS ?덉퐫?쒖? ?몄쬆?쒕뒗 Cloudflare媛 ?먮룞 ?앹꽦)
+# 사용자 지정 도메인 (DNS 레코드와 인증서는 Cloudflare가 자동 생성)
 # 학교 도메인 하나로만 서비스 (workers.dev 주소 사용 안 함)
 workers_dev = false
 routes = [
   { pattern = "english-cbt.allforedu.kr", custom_domain = true },
 ]
 
-# wrangler deploy / wrangler dev ?ㅽ뻾 ?꾩뿉 ?꾨줎?몄뿏?쒕? 癒쇱? 鍮뚮뱶?⑸땲??
-# (Cloudflare Workers Builds?먯꽌 鍮뚮뱶 紐낅졊??鍮꾩썙 ?먯뼱??dist/媛 留뚮뱾?댁쭚)
+# wrangler deploy / wrangler dev 실행 전에 프론트엔드를 먼저 빌드합니다.
+# (Cloudflare Workers Builds에서 빌드 명령을 비워 두어도 dist/가 만들어짐)
 [build]
 command = "npm run build"
 watch_dir = ["web/src", "shared"]
 
-# ?꾨줎?몄뿏??Vite 鍮뚮뱶 寃곌낵)瑜?Workers Static Assets濡??쒓났?⑸땲??
-# /api/* ????긽 Worker媛 癒쇱? 泥섎━?섍퀬, 洹???寃쎈줈??SPA(index.html)濡??곌껐?⑸땲??
+# 프론트엔드(Vite 빌드 결과)를 Workers Static Assets로 제공합니다.
+# /api/* 는 항상 Worker가 먼저 처리하고, 그 외 경로는 SPA(index.html)로 연결됩니다.
 [assets]
 directory = "./dist"
 binding = "ASSETS"
@@ -33,15 +33,15 @@ migrations_dir = "migrations"
 binding = "MEDIA"
 bucket_name = "english-cbt-media"
 
-# ?쒓컙??吏???묒떆瑜??쒕쾭 湲곗??쇰줈 留덇컧쨌梨꾩젏?⑸땲??
+# 시간이 지난 응시를 서버 기준으로 마감·채점합니다.
 [triggers]
 crons = ["*/5 * * * *"]
 
 [vars]
-# Cloudflare Access瑜??ъ슜??寃쎌슦 ?꾨옒 ??媛믪쓣 ?ㅼ젙?섏꽭?? (鍮꾩썙 ?먮㈃ 鍮꾨?踰덊샇 濡쒓렇?몃쭔 ?ъ슜)
+# Cloudflare Access를 사용할 경우 아래 두 값을 설정하세요. (비워 두면 비밀번호 로그인만 사용)
 ACCESS_TEAM_DOMAIN = ""
 ACCESS_AUD = ""
-# Access ?몄쬆 ???먮룞?쇰줈 愿由ъ옄 怨꾩젙??留뚮뱾??以?援먯궗 ?대찓??(?쇳몴 援щ텇)
+# Access 인증 시 자동으로 관리자 계정을 만들어 줄 교사 이메일 (쉼표 구분)
 ADMIN_EMAILS = ""
 
-# 鍮꾨?媛?APP_SECRET, SETUP_TOKEN)? wrangler secret put ?쇰줈 ?깅줉?⑸땲?? (.dev.vars.example 李멸퀬)
+# 비밀값(APP_SECRET, SETUP_TOKEN)은 wrangler secret put 으로 등록합니다. (.dev.vars.example 참고)
