@@ -89,6 +89,13 @@ npm run db:remote                           # 운영 D1에 테이블 생성
 npm run deploy                              # 빌드 + Workers(Static Assets 포함) 배포
 ```
 
+### 현재 배포
+- 서비스: https://english-cbt.invinciblebearme.workers.dev (관리자: `/admin`)
+- 저장소: https://github.com/invinciblebearme-ctrl/english-cbt
+- 자동 배포(Workers Builds): Cloudflare 대시보드 → Workers → `english-cbt` → Settings → Builds에서 이 저장소를 연결.
+  빌드 명령 `npm run build`, 배포 명령 `npx wrangler deploy`, 루트 디렉터리 `/`, 브랜치 `main`.
+  D1 스키마 변경(새 마이그레이션)이 있을 때는 배포 전에 `npm run db:remote`를 실행하세요.
+
 배포 후 `https://<주소>/api/health`에서 `{"ok":true,"db":true,"media":true,"secret":true}`를 확인하고, `/admin`에서 최초 관리자를 만듭니다.
 
 - **Workers Static Assets**로 화면과 API를 한 Worker에서 제공합니다(`wrangler.toml [assets]`). 별도의 Cloudflare Pages 프로젝트는 필요하지 않습니다. Pages를 꼭 써야 한다면 `dist/`를 Pages에 올리고 `/api/*`를 이 Worker로 라우팅하면 됩니다.
