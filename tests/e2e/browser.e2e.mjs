@@ -1,4 +1,4 @@
-﻿// 실제 브라우저(Edge/Chrome) 화면 테스트
+// 실제 브라우저(Edge/Chrome) 화면 테스트
 // 사용법: npm run build → npx wrangler dev --port 8787 (빈 로컬 DB) → node tests/e2e/browser.e2e.mjs [스크린샷폴더]
 import { chromium } from 'playwright-core';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';

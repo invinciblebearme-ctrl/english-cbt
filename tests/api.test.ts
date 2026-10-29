@@ -1,4 +1,4 @@
-﻿// 전체 흐름 통합 테스트: 관리자 설정 → 문제은행 → 학생·코드 → 시험 공개 → 응시 → 채점 → 성적
+// 전체 흐름 통합 테스트: 관리자 설정 → 문제은행 → 학생·코드 → 시험 공개 → 응시 → 채점 → 성적
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Env } from '../worker/src/env';
 import { Client, createTestEnv, fileForm, MP3, PNG, SETUP_TOKEN } from './helpers';

@@ -1,4 +1,4 @@
-﻿import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AnswerSync, type PendingAnswer } from '../web/src/lib/answerSync';
 import { crc32, parseCsv, toCsv, toXlsx } from '../web/src/lib/exporters';
 
