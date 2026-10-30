@@ -31,10 +31,16 @@ async function request<T>(scope: 'admin' | 'student', method: string, path: stri
   }
   let res: Response;
   try {
-    res = await fetch(path, { method, headers, body: payload, credentials: 'same-origin', signal });
+    // 관리자 API는 Cloudflare Access 로그인 페이지로 리디렉션될 수 있으므로 직접 따라가지 않음
+    res = await fetch(path, { method, headers, body: payload, credentials: 'same-origin', signal, redirect: scope === 'admin' ? 'manual' : 'follow' });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
     throw new ApiError(0, '인터넷 연결을 확인하세요.');
+  }
+  if (res.type === 'opaqueredirect') {
+    // Access 로그인 시간이 끝남 → 새로고침하면 Access 로그인 화면으로 이동
+    setTimeout(() => window.location.reload(), 1500);
+    throw new ApiError(401, '보안 로그인 시간이 끝났습니다. 잠시 후 로그인 화면으로 이동합니다.');
   }
   const type = res.headers.get('content-type') || '';
   const data = type.includes('json') ? await res.json().catch(() => ({})) : {};

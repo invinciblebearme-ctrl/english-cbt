@@ -39,8 +39,8 @@ crons = ["*/5 * * * *"]
 
 [vars]
 # Cloudflare Access를 사용할 경우 아래 두 값을 설정하세요. (비워 두면 비밀번호 로그인만 사용)
-ACCESS_TEAM_DOMAIN = ""
-ACCESS_AUD = ""
+ACCESS_TEAM_DOMAIN = "allforedu.cloudflareaccess.com"
+ACCESS_AUD = "4db92c559f8f99fb0ebcc6d62b54eff95538d61bf0f96997887d7d8fb55361a3"
 # Access 인증 시 자동으로 관리자 계정을 만들어 줄 교사 이메일 (쉼표 구분)
 ADMIN_EMAILS = ""
 

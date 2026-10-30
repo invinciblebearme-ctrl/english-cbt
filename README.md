@@ -106,7 +106,11 @@ npm run deploy                              # 빌드 + Workers(Static Assets 포
 1. Zero Trust → Access → Applications에서 Self-hosted 앱을 만들고 경로를 `<주소>/admin*`, `<주소>/api/admin/*`로 지정, 교사 이메일만 허용합니다.
 2. 앱의 AUD 태그와 팀 도메인을 `wrangler.toml [vars]`의 `ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`에 넣고 다시 배포합니다.
 3. Worker가 `Cf-Access-Jwt-Assertion` JWT의 서명(RS256)·만료·AUD·발급자를 검증합니다. 이메일이 `admins.email` 또는 `ADMIN_EMAILS`에 있어야 관리자로 인정됩니다.
-4. Access를 쓰지 않아도 아이디·비밀번호 로그인(PBKDF2 해시, 세션 쿠키)으로 운영할 수 있습니다.
+4. **현재 운영 설정**: Access 앱 「English CBT 관리자」가 `english-cbt.allforedu.kr/admin`, `/api/admin`을 보호하며,
+   허용 대상은 invinciblebearme@gmail.com(이메일 일회용 인증번호 로그인, 세션 12시간). 교사를 추가하려면 Zero Trust →
+   Access → Applications → 「English CBT 관리자」 → Policies에서 이메일을 추가하고, 관리자 화면 「설정 → 교사 계정 관리」에서
+   같은 이메일로 계정을 만드세요. Access를 통과한 뒤에도 앱의 아이디·비밀번호 로그인이 한 번 더 필요합니다(이중 보호).
+5. Access를 쓰지 않아도 아이디·비밀번호 로그인(PBKDF2 해시, 세션 쿠키)으로 운영할 수 있습니다.
 
 ## 5. 보안 구현 요약
 
